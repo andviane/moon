@@ -11,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.util.Log;
+
 /** A date class which can calculate decimal years, and knows how
 * to initialize itself from a string with decimal days, e.g.
 * "1997 Apr 1.034170"
@@ -51,7 +53,7 @@ class StarDate extends Date {
 			StarDate pdt = new StarDate("May 15 17:05:37 PDT 1997");
 			if (pst == pdt) {
 				hasTimeZoneBug = true;
-				System.out.println("You have the time zone bug!\n");
+				Log.w("moon", "Timezone bug detected");
 			}
 		}
 
@@ -70,7 +72,7 @@ class StarDate extends Date {
 			try {
 				stupid = new Date(maindate);
 			} catch (java.lang.IllegalArgumentException e) {
-				System.out.println("Error initializing time!\n");
+				Log.w("moon", "Error initializing time!");
 				stupid = new Date();
 			}
 
@@ -103,7 +105,6 @@ class StarDate extends Date {
 
 	public double getTimeAsDecimalDay() {
 		Double doub = new Double((double) getTime() / (24. * 60. * 60. * 1000.));
-		System.out.println("doub = " + doub.toString());
 		return doub.doubleValue() - doub.intValue();
 	}
 

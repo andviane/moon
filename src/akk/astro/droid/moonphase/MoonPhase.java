@@ -25,15 +25,12 @@ class MoonPhase {
 	// Equation from Meeus eqn. 46.4.
 	double getPhaseAngle(StarDate date) {
 		if (date == null) {
-			System.out.println("getPhaseAngle passed null date");
 			date = new StarDate();
 		}
-		//System.out.println("getPhaseAngle(" + date.toString() + ")");
 
 		// Time measured in Julian centuries from epoch J2000.0:
 		StarDate Tepoch = new StarDate("2000 January 1.5");
 		double T = (date.decimalYears() - Tepoch.decimalYears()) / 100.;
-		//System.out.println("T = " + new Double(T).toString());
 		double T2 = T * T;
 		double T3 = T2 * T;
 		double T4 = T3 * T;
