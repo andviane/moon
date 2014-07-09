@@ -3,7 +3,7 @@
 // Copyright 1996 by Akkana Peck.
 // You may use or distribute this code under the terms of the GPL v3 or any later version.
 // Modified September 11, 2010 by Audrius Meskauskas: cleanup, modified to run on standard JRE 1.5+
-// Ported to Android 28 Jun 2014 by Audrius Meskauskas
+// Ported to Android 28 Jun, 9 Jul 2014 by Audrius Meskauskas
 
 package akk.astro.droid.moonphase;
 
@@ -20,8 +20,6 @@ import android.util.Log;
 */
 @SuppressWarnings("serial")
 class StarDate extends Date {
-	static boolean initialized = false;
-	static boolean hasTimeZoneBug = false;
 
 	StarDate() {
 		super(System.currentTimeMillis());
@@ -39,24 +37,6 @@ class StarDate extends Date {
 
 	// setTime() may throw java.lang.illegalArgumentException
 	void setTime(String s) {
-		if (!initialized) {
-			initialized = true;
-
-			// find out whether this is one of the JDK implementations
-			// with the timezone bug.  Basically, the bug means that
-			// daylight savings time subtractions will be performed
-			// based on whether the OS currently thinks it's DST, not
-			// whether the time string says it's DST.  So if the OS
-			// is in DST and we have the bug, then times end up being
-			// an hour later than they should be.  Joy.
-			StarDate pst = new StarDate("May 15 17:05:37 PST 1997");
-			StarDate pdt = new StarDate("May 15 17:05:37 PDT 1997");
-			if (pst == pdt) {
-				hasTimeZoneBug = true;
-				Log.w("moon", "Timezone bug detected");
-			}
-		}
-
 		// see if the day is decimal:
 		int dot = s.indexOf('.');
 		if (dot > 0) {
@@ -108,10 +88,6 @@ class StarDate extends Date {
 		return doub.doubleValue() - doub.intValue();
 	}
 
-	public double getJulianDate() {
-		return (daysSince(new StarDate("Jan 1 00:00:00 PST 1970")) + 2440587.83333333333);
-	}
-
 	//
 	// toDateString() only prints the date, not day or time:
 	//
@@ -133,18 +109,5 @@ class StarDate extends Date {
 		// we want everything except the first word:
 		int firstindex = s.indexOf(' ') + 1;
 		return s.substring(firstindex);
-	}
-
-	//
-	// toJulianString() prints the string value of the julian date;
-	// if we rely on Double.toString(), we get scientific notation
-	// whether we want it or not.
-	//
-	public String toJulianString() {
-		double JD = getJulianDate();
-		Long l = new Long((long) JD);
-		String decimal = new Double(JD - l.doubleValue()).toString();
-		decimal = decimal.substring(decimal.indexOf("."));
-		return l.toString() + decimal;
 	}
 }
